@@ -17,8 +17,6 @@ return new class extends Migration
             $table->string('address', 128);
             $table->string('cp', 5);
             $table->string('city', 48);
-            $table->foreignId('state_id')->constrained('states')
-                ->onUpdate('cascade')->onDelete('restrict');
             $table->timestamps();
         });
     }

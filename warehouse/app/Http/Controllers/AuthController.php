@@ -18,26 +18,48 @@ class AuthController extends Controller
         $rules = [
             'name' => 'required|string|min:1|max:24',
             'lastname' => 'required|string|min:1|max:24',
-            'curp' => 'required|string|min:18|max:18',
-            'email' => 'required|string|email|min:1|max:64',
-            'username' => 'required|string|min:1|max:48',
+            'curp' => 'required|string|min:18|max:18|unique:users,curp',
             'password' => 'required|string|min:8|max:255',
             'role_id' => 'required|numeric',
-            'area_id' => 'required|numeric',              
+            'area_id' => 'required|numeric',
         ];
+
         $validator = Validator::make($request->input(), $rules);
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors()->all()
             ], 400);
         }
+
+        $nameParts = explode(' ', trim($request->name));
+        $lastnameParts = explode(' ', trim($request->lastname));
+
+        $firstName = $nameParts[0];
+        $firstLastName = $lastnameParts[0];
+        $secondLastName = isset($lastnameParts[1]) ? $lastnameParts[1] : '';
+
+        $username = strtolower($firstName . '.' . $firstLastName);
+
+        // Check for unique username
+        $baseUsername = $username;
+        $suffix = 1;
+
+        while (User::where('username', $username)->exists()) {
+            $username = $baseUsername . substr($secondLastName, 0, 3) . $suffix;
+            $suffix++;
+        }
+
+        $username = strtolower($username);
+        $email = $username . '@kei.com';
+
         $user = User::create([
             'name' => $request->name,
             'lastname' => $request->lastname,
             'curp' => $request->curp,
-            'email' => $request->email,
-            'username' => $request->username,
+            'email' => $email,
+            'username' => $username,
             'password' => Hash::make($request->password),
             'role_id' => $request->role_id,
             'area_id' => $request->area_id,
@@ -83,6 +105,8 @@ class AuthController extends Controller
 
         // Obtener el usuario autenticado
         $user = Auth::user();
+
+        $user->load('role', 'area');
 
         // Devolver respuesta exitosa con el usuario y el token
         return response()->json([

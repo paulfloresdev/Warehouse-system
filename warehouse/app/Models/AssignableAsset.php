@@ -19,10 +19,10 @@ class AssignableAsset extends Model
         'purchase_price',
         'condition',
         'out_pass',
+        'rack',
+        'shelf',
+        'box',
         'supplier_id',
-        'rack_id',
-        'shelf_id',
-        'box_id',
         'type_id',
     ];
 }

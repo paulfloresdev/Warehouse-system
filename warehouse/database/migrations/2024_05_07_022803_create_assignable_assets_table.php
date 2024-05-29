@@ -23,14 +23,11 @@ return new class extends Migration
             $table->double('purchase_price');
             $table->string('condition', 24);
             $table->boolean('out_pass');
+            $table->string('rack',16);
+            $table->string('shelf',16);
+            $table->string('box',16);
             $table->foreignId('supplier_id')->constrained('suppliers')
                 ->onUpdate('cascade')->onDelete('restrict'); 
-            $table->foreignId('rack_id')->constrained('racks')
-            ->onUpdate('cascade')->onDelete('restrict'); 
-            $table->foreignId('shelf_id')->constrained('shelfs')
-            ->onUpdate('cascade')->onDelete('restrict'); 
-            $table->foreignId('box_id')->constrained('boxes')
-            ->onUpdate('cascade')->onDelete('restrict'); 
             $table->foreignId('type_id')->constrained('asset_types')
             ->onUpdate('cascade')->onDelete('restrict');    
             $table->timestamps();

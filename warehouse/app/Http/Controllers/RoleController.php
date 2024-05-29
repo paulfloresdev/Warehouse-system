@@ -19,7 +19,7 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
-        $rules = ['name' => 'required|string|min:1|max:100'];
+        $rules = ['name' => 'required|string|min:1|max:16'];
         $validator = Validator::make($request->input(), $rules);
         if ($validator->fails()) {
             return response()->json([
@@ -47,7 +47,7 @@ class RoleController extends Controller
 
     public function update(Request $request, Role $role)
     {
-        $rules = ['name' => 'required|string|min:1|max:100'];
+        $rules = ['name' => 'required|string|min:1|max:16'];
         $validator = Validator::make($request->input(), $rules);
         if ($validator->fails()) {
             return response()->json([
